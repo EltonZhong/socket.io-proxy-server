@@ -29,8 +29,14 @@ class ProxySocket {
     }
 
     bind() {
-        this.clientSocket.on('disconnect', () => {
-            this.serverSocket.disconnect(true);
+        this.clientSocket.on('disconnect', (reson) => {
+            this.log('Holy shit from client:')
+            this.log(pretty(reson));
+
+            if (this.serverSocket.connected) {
+                this.log('Close server socket, due to the connection lost of client socket')
+                this.serverSocket.disconnect(true);
+            }
         });
 
         /**
@@ -40,9 +46,13 @@ class ProxySocket {
         this.serverSocket.on('disconnect', (reson) => {
 
             // This should never happen: request from proxy to server should be stable.
-            this.log('Holy shit');
+            this.log('Holy shit from server:');
             this.log(pretty(reson));
-            this.clientSocket.disconnect();
+
+            if (this.clientSocket.connected) {
+                this.log('Close client socket, due to the connection lost of server socket')
+                this.clientSocket.disconnect();
+            }
         });
 
         this.clientSocket.use((packet, next) => {
