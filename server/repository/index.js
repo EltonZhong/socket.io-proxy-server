@@ -1,6 +1,6 @@
 const ProxySocket = require('../model/ProxySocket');
 const _ = require('lodash');
-const logger = require('log4js').getLogger(__filename);
+const logger = require('log4js').getLogger('Sockets');
 
 class SocketsRepository {
     constructor() {

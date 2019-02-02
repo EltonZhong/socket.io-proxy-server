@@ -5,7 +5,7 @@ const patch = require('socketio-wildcard')(io.Manager);
 const pretty = require('pretty-format');
 const { getLogger } = require('log4js');
 
-const logger = getLogger(__filename);
+const logger = getLogger('ProxySocket');
 let id = 0;
 
 class ProxySocket {
@@ -64,7 +64,7 @@ class ProxySocket {
     }
 
     log() {
-        logger.debug([this.id, ...arguments]);
+        logger.debug(...[this.id, ...arguments]);
     }
 }
 
