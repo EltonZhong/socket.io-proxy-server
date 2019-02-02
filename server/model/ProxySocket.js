@@ -30,8 +30,8 @@ class ProxySocket {
 
     bind() {
         this.clientSocket.on('disconnect', (reson) => {
-            this.log('Holy shit from client:')
-            this.log(pretty(reson));
+            this.log(`Client ${this.clientSocket.id} disconnect:`)
+            this.log(reson);
 
             if (this.serverSocket.connected) {
                 this.log('Close server socket, due to the connection lost of client socket')
@@ -45,9 +45,11 @@ class ProxySocket {
          */
         this.serverSocket.on('disconnect', (reson) => {
 
-            // This should never happen: request from proxy to server should be stable.
-            this.log('Holy shit from server:');
-            this.log(pretty(reson));
+            // This is often triggered by [client socket connection disconnect]
+            // Lost from server side should never happen: request from proxy to server should be stable.
+            // When server connection lost, client socket will be closed, and client'll not connect initiative.
+            this.log(`Socket with Server disconnect:`);
+            this.log(reson);
 
             if (this.clientSocket.connected) {
                 this.log('Close client socket, due to the connection lost of server socket')
@@ -57,14 +59,14 @@ class ProxySocket {
 
         this.clientSocket.use((packet, next) => {
             this.log('Packet from client:');
-            this.log(pretty(packet));
+            this.log(packet);
             this.serverSocket.emit(...packet);
             next();
         });
 
         this.serverSocket.on('*', (packet) => {
             this.log('Packet from server:');
-            this.log(pretty(packet));
+            this.log(packet);
             this.clientSocket.emit(...packet.data);
         });
 
@@ -74,7 +76,7 @@ class ProxySocket {
     }
 
     log() {
-        logger.debug(...[this.id, ...arguments]);
+        logger.debug(...[this.id, ...arguments].map(pretty));
     }
 }
 
