@@ -1,40 +1,25 @@
 const io = require('socket.io-client');
-const patch = require('socketio-wildcard')(io.Manager);
 
-const client = io('http://localhost:3000');
-patch(client);
+const client = io('http://localhost:65000');
 
+let i = 0;
+let j = 0;
 client.on('connect', () => {
-    console.log('connect!');
+    console.log(`${i++} connect! ' + ${client.id}`);
 });
 
 client.on('disconnect', () => {
-    console.log('disconnect!');
-});
-
-client.emit('hello', 'world', (resp) => {
-    console.log('resp');
+    console.log(`${j} disconnect! '`);
+    console.log(`Remains ${i - j} connections`);
+    j ++;
 });
 
 setInterval(() => {
+    console.log(client.id + '\tdisconnect')
     client.disconnect();
-    console.log('disconn')
 }, 1000)
 
 setInterval(() => {
     client.connect();
-
-client.emit('hello2', 'world', (resp) => {
-    console.log('resp');
-    console.log(resp);
-});
 }, 1000)
-setInterval(() => {console.log(client.id)}, 1000)
-client.on('*', function(a, b) {
-    console.log('wildcard got')
-    console.log(a, b)
-    console.log(arguments);
-})
-client.on('do', () => {
-    console.log('well');
-})
+

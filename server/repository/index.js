@@ -1,5 +1,6 @@
 const ProxySocket = require('../model/ProxySocket');
 const _ = require('lodash');
+const logger = require('log4js').getLogger(__filename);
 
 class SocketsRepository {
     constructor() {
@@ -19,13 +20,12 @@ class SocketsRepository {
     }
 
     register(socket) {
-        console.log(socket.handshake.query);
-        console.log(`A socket ${socket.id} connect. got ${this.proxySockets.length + 1}`);
+        logger.debug(`A socket ${socket.id} connect. got ${this.proxySockets.length + 1}`);
         const proxySocket = ProxySocket.proxyWith(socket);
         this.proxySockets.push(proxySocket);
         socket.on('disconnect', () => {
-            console.log(`A socket with id ${socket.id} disconnect. left ${this.proxySockets.length}`);
             _.remove(this.proxySockets, proxySocket);
+            logger.debug(`A socket with id ${socket.id} disconnect. left ${this.proxySockets.length}`);
         });
     }
 }

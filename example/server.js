@@ -14,20 +14,22 @@ app.use(async (context) => {
 })
 
 const se = new Set();
+let i = 0;
+let j = 0;
 io.on('connection', (socket) => {
+    console.log('Sockets still alive:');
+    console.log(Object.keys(io.sockets.sockets).length);
     se.add(socket);
     console.log(se.size);
     console.log(pretty(socket.id));
-    console.log('One socket connected:')
-    socket.on('connect', () => {
-        console.log('This is nerver triggered' + socket.id);
-    });
+    console.log(socket.id + 'One socket connected:' + i++)
+
     socket.on('disconnect', () => {
-        console.log('This is? ? disconnec');
+        console.log(socket.id + 'One socket disconnect:' + j++)
+        console.log(`There are ${i - j} sockets alive.`)
     });
+
     socket.use((pack, next) => {
-        console.log(pack);
-        console.log('I can fly2')
         next();
         socket.emit('do', "d")
     });

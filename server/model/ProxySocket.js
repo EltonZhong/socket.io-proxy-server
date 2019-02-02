@@ -3,9 +3,14 @@ const io = require('socket.io-client');
 // https://github.com/hden/socketio-wildcard
 const patch = require('socketio-wildcard')(io.Manager);
 const pretty = require('pretty-format');
+const { getLogger } = require('log4js');
+
+const logger = getLogger(__filename);
+let id = 0;
 
 class ProxySocket {
     constructor(clientSocket, serverSocket) {
+        this.id = id ++;
         this.clientSocket = clientSocket;
         this.serverSocket = serverSocket;
         this.bind();
@@ -14,7 +19,7 @@ class ProxySocket {
     static proxyWith(clientSocket) {
 
         // const serverSocket = io(clientSocket.request.url)
-        const serverSocket = io('http://localhost:3333', {
+        const serverSocket = io('https://webaqaxmn.asialab.glip.net:443', {
             query: {
                 tk: clientSocket.handshake.tk
             }
@@ -32,25 +37,34 @@ class ProxySocket {
          * TODO: how to mock server lost connection?
          * socket.disconnect() will make client not reuqest to server anymore.
          */
-        this.serverSocket.on('disconnect', () => {
+        this.serverSocket.on('disconnect', (reson) => {
 
             // This should never happen: request from proxy to server should be stable.
-            console.error('Holy shit');
+            this.log('Holy shit');
+            this.log(pretty(reson));
             this.clientSocket.disconnect();
         });
 
         this.clientSocket.use((packet, next) => {
-            console.log('Packet from client:');
-            console.log(pretty(packet));
+            this.log('Packet from client:');
+            this.log(pretty(packet));
             this.serverSocket.emit(...packet);
             next();
         });
 
         this.serverSocket.on('*', (packet) => {
-            console.log('Packet from server:');
-            console.log(pretty(packet));
+            this.log('Packet from server:');
+            this.log(pretty(packet));
             this.clientSocket.emit(...packet.data);
-        })
+        });
+
+        this.serverSocket.on('connect', () => {
+            this.log('Server socket connected');
+        });
+    }
+
+    log() {
+        logger.debug([this.id, ...arguments]);
     }
 }
 

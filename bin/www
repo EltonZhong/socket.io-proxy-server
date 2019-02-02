@@ -1,0 +1,12 @@
+const Koa = require('koa');
+const app = new Koa();
+const listenOnSocketIo = require('../server/index');
+const http = require('http').createServer(app.callback());
+const port = process.env.PORT || 3000;
+
+listenOnSocketIo(http);
+
+http.listen(port, function () {
+    console.log(`listening on *:${port}`);
+});
+
