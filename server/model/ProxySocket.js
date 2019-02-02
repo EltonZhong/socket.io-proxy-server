@@ -33,10 +33,8 @@ class ProxySocket {
             this.log(`Client ${this.clientSocket.id} disconnect:`)
             this.log(reson);
 
-            if (this.serverSocket.connected) {
-                this.log('Close server socket, due to the connection lost of client socket')
-                this.serverSocket.disconnect(true);
-            }
+            this.log('Close server socket, due to the connection lost of client socket')
+            this.serverSocket.disconnect(true);
         });
 
         /**
@@ -51,10 +49,8 @@ class ProxySocket {
             this.log(`Socket with Server disconnect:`);
             this.log(reson);
 
-            if (this.clientSocket.connected) {
-                this.log('Close client socket, due to the connection lost of server socket')
-                this.clientSocket.disconnect();
-            }
+            this.log('Close client socket, due to the connection lost of server socket')
+            this.clientSocket.disconnect();
         });
 
         this.clientSocket.use((packet, next) => {
