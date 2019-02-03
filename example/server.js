@@ -17,6 +17,7 @@ const se = new Set();
 let i = 0;
 let j = 0;
 io.on('connection', (socket) => {
+    console.log(socket.handshake)
     console.log('Sockets still alive:');
     console.log(Object.keys(io.sockets.sockets).length);
     se.add(socket);
