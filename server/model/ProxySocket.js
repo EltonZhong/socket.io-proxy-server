@@ -17,15 +17,22 @@ class ProxySocket {
     }
 
     static proxyWith(clientSocket) {
+        const token = clientSocket.handshake.tk;
 
         // const serverSocket = io(clientSocket.request.url)
         const serverSocket = io('https://webaqaxmn.asialab.glip.net:443', {
-            query: {
-                tk: clientSocket.handshake.tk
-            }
-        })
+            transports: ['polling', 'websocket'],
+            autoConnect: false,
+            reconnection: true,
+            reconnectionDelay: 5000,
+            reconnectionDelayMax: 25000,
+            forceNew: true,
+            query: { tk: token },
+        });
         patch(serverSocket);
-        return new ProxySocket(clientSocket, serverSocket);
+        const socket = new ProxySocket(clientSocket, serverSocket);
+        socket.log(`Connect to server with token: ${token}`);
+        return socket;
     }
 
     bind() {
