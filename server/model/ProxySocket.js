@@ -1,4 +1,5 @@
 const io = require('socket.io-client');
+const _ = require('lodash');
 
 // https://github.com/hden/socketio-wildcard
 const patch = require('socketio-wildcard')(io.Manager);
@@ -17,15 +18,19 @@ class ProxySocket {
     }
 
     static proxyWith(clientSocket) {
-        const token = clientSocket.handshake.query.tk;
+        const clientQuery = clientSocket.handshake.query;
+        const nativeProperties = ['EIO', 'transport', 't', 'b64'];
+        const query = _.omit(clientQuery, nativeProperties);
 
         // const serverSocket = io(clientSocket.request.url)
         const serverSocket = io('https://webaqaxmn.asialab.glip.net:443', {
-            query: { tk: token },
+            query,
+            forceNew: true,
         });
         patch(serverSocket);
         const socket = new ProxySocket(clientSocket, serverSocket);
-        socket.log(`Connect to server with token: ${token}`);
+        socket.log(`Accept query from client: ${pretty(clientQuery)}`);
+        socket.log(`Connect to server with query: ${pretty(query)}`);
         return socket;
     }
 
@@ -49,6 +54,9 @@ class ProxySocket {
             // When server connection lost, client socket will be closed, and client'll not connect initiative.
             this.log(`Socket with Server disconnect:`);
             this.log(reson);
+            if (reson === 'io client disconnect') {
+                return;
+            }
 
             this.log('Close client socket, due to the connection lost of server socket')
             this.clientSocket.disconnect();
@@ -73,7 +81,7 @@ class ProxySocket {
     }
 
     log() {
-        logger.debug(...[this.id, ...arguments].map(pretty));
+        logger.debug(...[this.id, ...arguments].map(i => typeof i === 'string' ? i : pretty(i)));
     }
 }
 
