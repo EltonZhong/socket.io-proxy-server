@@ -63,10 +63,10 @@ class ProxySocket {
             this.clientSocket.disconnect();
         });
 
-        this.clientSocket.use((packet, next) => {
+        this.clientSocket.on('*', (packet) => {
             this.log('Packet from client:');
             this.log(packet);
-            this.serverSocket.emit(...packet);
+            this.serverSocket.emit(...packet.data);
             next();
         });
 

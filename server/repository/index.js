@@ -1,5 +1,6 @@
-const ProxySocket = require('../model/ProxySocket');
 const _ = require('lodash');
+const middleware = require('socketio-wildcard')();
+const ProxySocket = require('../model/ProxySocket');
 const logger = require('log4js').getLogger('Sockets');
 
 class SocketsRepository {
@@ -10,6 +11,7 @@ class SocketsRepository {
 
     inject(io) {
         this.io = io;
+        this.io.use(middleware);
         this.init();
     }
 

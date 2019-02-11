@@ -1,6 +1,6 @@
 {
   "name": "socket.io-proxy-server",
-  "version": "1.2.0",
+  "version": "1.4.5",
   "description": "",
   "main": "server/index.js",
   "scripts": {
@@ -13,8 +13,8 @@
     "lodash": "^4.17.11",
     "log4js": "^4.0.1",
     "pretty-format": "^24.0.0",
-    "socket.io": "^2.2.0",
-    "socket.io-client": "^2.2.0",
+    "socket.io": "^1.4.5",
+    "socket.io-client": "^1.4.5",
     "socketio-wildcard": "^2.0.0"
   }
 }
