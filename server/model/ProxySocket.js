@@ -5,6 +5,7 @@ const _ = require('lodash');
 const patch = require('socketio-wildcard')(io.Manager);
 const pretty = require('pretty-format');
 const { getLogger } = require('log4js');
+const { SERVER } = require('../config');
 
 const logger = getLogger('ProxySocket');
 let id = 0;
@@ -22,8 +23,8 @@ class ProxySocket {
         const nativeProperties = ['EIO', 'transport', 't', 'b64'];
         const query = _.omit(clientQuery, nativeProperties);
 
-        // const serverSocket = io(clientSocket.request.url)
-        const serverSocket = io('https://webaqaxmn.asialab.glip.net:443', {
+        // Where data from client sockets really goes.
+        const serverSocket = io(SERVER, {
             query,
             forceNew: true,
         });

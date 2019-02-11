@@ -1,3 +1,3 @@
 module.exports = {
-    SERVER: '',
+    SERVER: 'https://webaqaxmn.asialab.glip.net:443',
 }
