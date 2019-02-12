@@ -67,7 +67,6 @@ class ProxySocket {
             this.log('Packet from client:');
             this.log(packet);
             this.serverSocket.emit(...packet.data);
-            next();
         });
 
         this.serverSocket.on('*', (packet) => {
@@ -82,7 +81,7 @@ class ProxySocket {
     }
 
     log() {
-        logger.debug(...[this.id, ...arguments].map(i => typeof i === 'string' ? i : pretty(i)));
+        logger.info(...[this.id, ...arguments].map(i => typeof i === 'string' ? i : pretty(i)));
     }
 }
 

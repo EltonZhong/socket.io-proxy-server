@@ -32,8 +32,4 @@ class SocketsRepository {
     }
 }
 
-class ServerUtils {
-
-}
-
 module.exports = new SocketsRepository();

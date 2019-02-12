@@ -1,6 +1,6 @@
 {
   "name": "socket.io-proxy-server",
-  "version": "1.4.5",
+  "version": "1.4.51",
   "description": "",
   "main": "server/index.js",
   "scripts": {
