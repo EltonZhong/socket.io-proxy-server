@@ -6,12 +6,12 @@
  * 
  * Below is the example:
  * ===========================================================
- * manager.addReqHandler(async function(proxySocket, packet) {
+ *   manager.addReqHandler(async function(proxySocket, packet) {
           console.log('req');
           console.log(arguments);
      });
 
-     repo.addRespHandler(async function() {
+     manager.addRespHandler(async function() {
           console.log('resp');
           console.log(arguments);
      });
