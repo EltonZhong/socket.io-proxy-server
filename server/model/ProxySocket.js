@@ -13,6 +13,8 @@ let id = 0;
 class ProxySocket {
     constructor(clientSocket, serverSocket) {
         this.id = id ++;
+        this.clientPacketProcessors = [];
+        this.serverPacketProcessors = [];
         this.clientSocket = clientSocket;
         this.serverSocket = serverSocket;
         this.bind();
@@ -33,6 +35,14 @@ class ProxySocket {
         socket.log(`Accept query from client: ${pretty(clientQuery)}`);
         socket.log(`Connect to server with query: ${pretty(query)}`);
         return socket;
+    }
+
+    processClientPacketWith(fn) {
+        this.clientPacketProcessors.push(fn);
+    }
+
+    processServerPacketWith(fn) {
+        this.serverPacketProcessors.push(fn);
     }
 
     bind() {
@@ -63,15 +73,17 @@ class ProxySocket {
             this.clientSocket.disconnect();
         });
 
-        this.clientSocket.on('*', (packet) => {
+        this.clientSocket.on('*', async (packet) => {
             this.log('Packet from client:');
             this.log(packet);
+            await Promise.all(this.clientPacketProcessors.map(p => p(packet)));
             this.serverSocket.emit(...packet.data);
         });
 
-        this.serverSocket.on('*', (packet) => {
+        this.serverSocket.on('*', async (packet) => {
             this.log('Packet from server:');
             this.log(packet);
+            await Promise.all(this.serverPacketProcessors.map(p => p(packet)));
             this.clientSocket.emit(...packet.data);
         });
 
