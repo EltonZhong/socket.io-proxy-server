@@ -24,5 +24,11 @@ declare namespace proxy {
     }
 
     // Async handler
-    type Handler = (proxySocket: ProxySocket, packet: SocketIO.Packet) => Promise<void>;
+    type Handler = (proxySocket: ProxySocket, packet: WildCardPacket) => Promise<void>;
+
+    interface WildCardPacket {
+        nsp: string;
+        type: string;
+        packet: SocketIO.Packet
+    }
 }
