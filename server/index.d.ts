@@ -21,7 +21,7 @@ declare namespace proxy {
 
         addReqHandler(h: Handler) : void;
         addRespHandler(h: Handler) : void;
-        use(logger: Logger)
+        use(logger: Logger) : void;
     }
 
     // Async handler

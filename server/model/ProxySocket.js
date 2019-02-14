@@ -5,6 +5,7 @@ const _ = require('lodash');
 const patch = require('socketio-wildcard')(io.Manager);
 const pretty = require('pretty-format');
 const { SERVER } = require('../config');
+const logman = require('../logman');
 
 let id = 0;
 
