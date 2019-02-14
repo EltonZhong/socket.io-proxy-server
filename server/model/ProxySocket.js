@@ -4,10 +4,8 @@ const _ = require('lodash');
 // https://github.com/hden/socketio-wildcard
 const patch = require('socketio-wildcard')(io.Manager);
 const pretty = require('pretty-format');
-const { getLogger } = require('log4js');
 const { SERVER } = require('../config');
 
-const logger = getLogger('ProxySocket');
 let id = 0;
 
 class ProxySocket {
@@ -93,7 +91,7 @@ class ProxySocket {
     }
 
     log() {
-        logger.info(...[this.id, ...arguments].map(i => typeof i === 'string' ? i : pretty(i)));
+        logman.logger.debug(...[this.id, ...arguments].map(i => typeof i === 'string' ? i : pretty(i)));
     }
 }
 

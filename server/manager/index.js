@@ -1,7 +1,7 @@
 const _ = require('lodash');
 const middleware = require('socketio-wildcard')();
 const ProxySocket = require('../model/ProxySocket');
-const logger = require('log4js').getLogger('Sockets');
+const logman = require('../logman');
 
 class SocketsManager {
     constructor() {
@@ -24,12 +24,12 @@ class SocketsManager {
     }
 
     register(socket) {
-        logger.debug(`A socket ${socket.id} connect. got ${this.proxySockets.length + 1}`);
+        logman.logger.info(`A socket ${socket.id} connect. got ${this.proxySockets.length + 1}`);
         const proxySocket = ProxySocket.proxyWith(socket);
         this.proxySockets.push(proxySocket);
         socket.on('disconnect', () => {
             _.remove(this.proxySockets, proxySocket);
-            logger.debug(`A socket with id ${socket.id} disconnect. left ${this.proxySockets.length}`);
+            logman.logger.info(`A socket with id ${socket.id} disconnect. left ${this.proxySockets.length}`);
         });
 
         this.intercept(proxySocket);
@@ -54,6 +54,10 @@ class SocketsManager {
 
     addRespHandler(h) {
         this.respHandlers.push(h);
+    }
+
+    use(logger) {
+        logman.logger = logger;
     }
 }
 

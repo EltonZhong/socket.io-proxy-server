@@ -21,14 +21,20 @@ declare namespace proxy {
 
         addReqHandler(h: Handler) : void;
         addRespHandler(h: Handler) : void;
+        use(logger: Logger)
     }
 
     // Async handler
     type Handler = (proxySocket: ProxySocket, packet: WildCardPacket) => Promise<void>;
 
+    interface Logger {
+        info(...args: any): void
+        debug(...args: any): void
+    }
+
     interface WildCardPacket {
         nsp: string;
         type: string;
-        packet: SocketIO.Packet
+        data: SocketIO.Packet
     }
 }
