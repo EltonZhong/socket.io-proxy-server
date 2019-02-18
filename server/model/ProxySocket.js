@@ -74,15 +74,15 @@ class ProxySocket {
 
         this.clientSocket.on('*', async (packet) => {
             this.log('Packet from client:');
-            this.log(packet);
             await Promise.all(this.clientPacketProcessors.map(p => p(packet)));
+            this.log(packet);
             this.serverSocket.emit(...packet.data);
         });
 
         this.serverSocket.on('*', async (packet) => {
             this.log('Packet from server:');
-            this.log(packet);
             await Promise.all(this.serverPacketProcessors.map(p => p(packet)));
+            this.log(packet);
             this.clientSocket.emit(...packet.data);
         });
 
